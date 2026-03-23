@@ -18,7 +18,6 @@ public class KafkaProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final MeterRegistry meterRegistry;
-
     private static final String TOPIC = "VTB_topic_2";
     private AtomicInteger counter = new AtomicInteger(0);
     private Timer sendTimer;
@@ -33,14 +32,12 @@ public class KafkaProducer {
                 .description("Time to send message")
                 .register(meterRegistry);
     }
-
     public void sendProcessedMessage(String message) {
         Timer.Sample sample = Timer.start(meterRegistry);
         try {
             int partition = counter.getAndIncrement() % 2;
             kafkaTemplate.send(TOPIC, partition, null, message);
             sendCounter.increment();
-            log.debug("📤 Отправлено в партицию {}: {}", partition, message);
         } finally {
             sample.stop(sendTimer);
         }

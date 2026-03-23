@@ -44,9 +44,8 @@ public class KafkaConsumer {
             String processed = id + "123";
             kafkaProducer.sendProcessedMessage(processed);
             successCounter.increment();
-            log.info("✅ Обработано: {} -> {}", id, processed);
         } catch (JsonProcessingException e) {
-            log.error("❌ Ошибка обработки: {}", message, e);
+            log.error("Ошибка обработки: {}", message, e);
         } finally {
             sample.stop(processingTimer);
         }
