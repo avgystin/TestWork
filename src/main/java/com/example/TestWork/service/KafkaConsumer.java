@@ -20,6 +20,7 @@ public class KafkaConsumer {
 
     private final KafkaProducer kafkaProducer;
     private final MeterRegistry meterRegistry;
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private Counter successCounter;
     private Timer processingTimer;
@@ -38,8 +39,7 @@ public class KafkaConsumer {
     public void processMessage(String message) {
         Timer.Sample sample = Timer.start(meterRegistry);
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readTree(message);
+            JsonNode node = MAPPER.readTree(message);
             String id = node.get("id").asText();
             String processed = id + "123";
             kafkaProducer.sendProcessedMessage(processed);
