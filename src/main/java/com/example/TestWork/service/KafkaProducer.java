@@ -33,15 +33,14 @@ public class KafkaProducer {
                 .description("Time to send message")
                 .register(meterRegistry);
     }
-    public void sendProcessedMessage(String message, long startConsumerTime) {
-        Timer.Sample sample = Timer.start(meterRegistry);
+    public void sendProcessedMessage(String message) {
         long startTime = System.currentTimeMillis();
-        delayStaticService.applyDelay("delayToProducer", startTime);
+        Timer.Sample sample = Timer.start(meterRegistry);
         try {
             int partition = counter.getAndIncrement() % 2;
-            delayStaticService.applyDelay("delayToKafka", startConsumerTime);
             kafkaTemplate.send(TOPIC, partition, null, message);
             sendCounter.increment();
+            delayStaticService.applyDelay("delayToProducer", startTime);
         } finally {
             sample.stop(sendTimer);
         }

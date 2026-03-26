@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "response.delay.static")
 public class DelayStaticConfig {
     private long defaultDelay;
-    private long delayToKafka;
     private long delayToConsumer;
     private long delayToProducer;
 }

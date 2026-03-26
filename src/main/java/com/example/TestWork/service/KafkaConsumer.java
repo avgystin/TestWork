@@ -39,13 +39,13 @@ public class KafkaConsumer {
     public void processMessage(String message) {
         long startTime = System.currentTimeMillis();
         Timer.Sample sample = Timer.start(meterRegistry);
-        delayStaticService.applyDelay("delayToConsumer", startTime);
         try {
             JsonNode node = MAPPER.readTree(message);
             String id = node.get("id").asText();
             String processed = id + "123";
-            kafkaProducer.sendProcessedMessage(processed, startTime);
+            kafkaProducer.sendProcessedMessage(processed);
             successCounter.increment();
+            delayStaticService.applyDelay("delayToConsumer", startTime);
         } catch (JsonProcessingException e) {
             log.error("Ошибка обработки: {}", message, e);
         } finally {

@@ -51,6 +51,5 @@ response:
   delay:
     static:
       defaultDelay: 0
-      delayToKafka: 0
       delayToConsumer: 0
       delayToProducer: 0

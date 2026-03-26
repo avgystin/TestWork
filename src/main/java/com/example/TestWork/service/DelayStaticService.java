@@ -58,7 +58,6 @@ public class DelayStaticService {
 
     private long getDelayEndpoint(String endpoint) {
         return switch (endpoint) {
-            case "delayToKafka" -> delayStaticConfig.getDelayToKafka();
             case "delayToConsumer" -> delayStaticConfig.getDelayToConsumer();
             case "delayToProducer" -> delayStaticConfig.getDelayToProducer();
             default -> delayStaticConfig.getDefaultDelay();

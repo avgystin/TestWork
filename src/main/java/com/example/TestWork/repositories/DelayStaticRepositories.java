@@ -12,7 +12,6 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "response.delay.static")
 public class DelayStaticRepositories {
     private long defaultDelay;
-    private long delayToKafka;
     private long delayToConsumer;
     private long delayToProducer;
 
@@ -20,7 +19,6 @@ public class DelayStaticRepositories {
     public Map<String, Object> getOriginalFromYaml() {
         return Map.of(
                 "defaultDelay", defaultDelay,
-                "delayToKafka", delayToKafka,
                 "delayToConsumer", delayToConsumer,
                 "delayToProducer", delayToProducer
         );
