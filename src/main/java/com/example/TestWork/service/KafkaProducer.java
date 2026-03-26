@@ -18,8 +18,9 @@ public class KafkaProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final MeterRegistry meterRegistry;
+    private final DelayStaticService delayStaticService;
     private static final String TOPIC = "VTB_topic_2";
-    private AtomicInteger counter = new AtomicInteger(0);
+    private AtomicInteger counter = new AtomicInteger(1);
     private Timer sendTimer;
     private Counter sendCounter;
 
@@ -32,10 +33,13 @@ public class KafkaProducer {
                 .description("Time to send message")
                 .register(meterRegistry);
     }
-    public void sendProcessedMessage(String message) {
+    public void sendProcessedMessage(String message, long startConsumerTime) {
         Timer.Sample sample = Timer.start(meterRegistry);
+        long startTime = System.currentTimeMillis();
+        delayStaticService.applyDelay("delayToProducer", startTime);
         try {
             int partition = counter.getAndIncrement() % 2;
+            delayStaticService.applyDelay("delayToKafka", startConsumerTime);
             kafkaTemplate.send(TOPIC, partition, null, message);
             sendCounter.increment();
         } finally {

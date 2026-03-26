@@ -9,17 +9,17 @@ import io.micrometer.core.instrument.Timer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.stereotype.Component;
-
 import jakarta.annotation.PostConstruct;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @RequiredArgsConstructor
 @Slf4j
 public class KafkaConsumer {
 
     private final KafkaProducer kafkaProducer;
     private final MeterRegistry meterRegistry;
+    private final DelayStaticService delayStaticService;
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private Counter successCounter;
@@ -37,12 +37,14 @@ public class KafkaConsumer {
 
     @KafkaListener(topics = "VTB_topic_1", groupId = "VTB-consumer")
     public void processMessage(String message) {
+        long startTime = System.currentTimeMillis();
         Timer.Sample sample = Timer.start(meterRegistry);
+        delayStaticService.applyDelay("delayToConsumer", startTime);
         try {
             JsonNode node = MAPPER.readTree(message);
             String id = node.get("id").asText();
             String processed = id + "123";
-            kafkaProducer.sendProcessedMessage(processed);
+            kafkaProducer.sendProcessedMessage(processed, startTime);
             successCounter.increment();
         } catch (JsonProcessingException e) {
             log.error("Ошибка обработки: {}", message, e);

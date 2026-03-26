@@ -18,6 +18,8 @@ spring:
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      concurrency: 2
 #app:
 #  kafka:
 #    input-topic: VTB_topic_1
@@ -44,3 +46,11 @@ management:
   metrics:
     tags:
       application: TestWork
+
+response:
+  delay:
+    static:
+      defaultDelay: 0
+      delayToKafka: 0
+      delayToConsumer: 0
+      delayToProducer: 0
