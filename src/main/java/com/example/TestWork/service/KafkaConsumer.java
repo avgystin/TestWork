@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import jakarta.annotation.PostConstruct;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,6 +36,7 @@ public class KafkaConsumer {
                 .register(meterRegistry);
     }
 
+    @Async
     @KafkaListener(topics = "VTB_topic_1", groupId = "VTB-consumer")
     public void processMessage(String message) {
         long startTime = System.currentTimeMillis();
